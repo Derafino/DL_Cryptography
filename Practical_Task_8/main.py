@@ -52,8 +52,6 @@ def SetRandom(bits):
 
 
 def main():
-    def SetRandom(bits):
-        return random.randint(2 ** (bits - 1), 2 ** bits - 1)
 
     G = BasePointGGet()
 
