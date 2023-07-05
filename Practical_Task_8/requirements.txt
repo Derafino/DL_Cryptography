@@ -1,1 +1,2 @@
 cryptography==41.0.1
+ECPy==1.2.5
