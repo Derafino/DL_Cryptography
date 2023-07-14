@@ -5,10 +5,10 @@ from ecpy.curves import Curve
 from Practical_Task_8.main import get_base_point, scalar_mult, ECPoint
 
 curve = Curve.get_curve('secp256r1')
-base_point = get_base_point()
 
 
-def generate_keys() -> Tuple[int, ECPoint]:
+
+def generate_keys(base_point) -> Tuple[int, ECPoint]:
     n = curve.order
     privKey = secrets.randbelow(n - 1) + 1
     pubKey = scalar_mult(privKey, base_point)
@@ -20,9 +20,9 @@ def get_shared_secret(my_private_key: int, their_public_key: ECPoint) -> int:
     return shared_point.X
 
 
-def ecdh_protocol() -> int:
-    privKey1, pubKey1 = generate_keys()
-    privKey2, pubKey2 = generate_keys()
+def ecdh_protocol(base_point) -> int:
+    privKey1, pubKey1 = generate_keys(base_point)
+    privKey2, pubKey2 = generate_keys(base_point)
 
     shared_secret_1 = get_shared_secret(privKey1, pubKey2)
     shared_secret_2 = get_shared_secret(privKey2, pubKey1)
@@ -37,7 +37,8 @@ def ecdh_protocol() -> int:
 
 
 def main():
-    shared_secret_res = ecdh_protocol()
+    base_point = get_base_point()
+    shared_secret_res = ecdh_protocol(base_point)
     print(f'Shared secret: {shared_secret_res}')
 
 
