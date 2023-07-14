@@ -1,22 +1,19 @@
-import hashlib
 import secrets
-from typing import Tuple
 
+from typing import Tuple
 from ecpy.curves import Curve
-from Practical_Task_8.main import get_base_point, ECPoint, scalar_mult, add_ECPoints
+from Practical_Task_5.main import my_sha1
+from Practical_Task_8.main import add_ECPoints, get_base_point, scalar_mult, ECPoint
 from Practical_Task_9.main import generate_keys
 
 curve = Curve.get_curve('secp256r1')
-base_point = get_base_point()
-print('base_point', base_point.X, base_point.Y)
 
 
 def hash_message(message: str) -> int:
-    hashed_message = int(hashlib.sha256(message.encode()).hexdigest(), 16)
-    return hashed_message
+    return int(my_sha1(message.encode()), 16)
 
 
-def generate_signature(private_key: int, message: str) -> Tuple[int, int]:
+def generate_signature(private_key: int, message: str, base_point) -> Tuple[int, int]:
     z = hash_message(message)
     n = curve.order
     r = 0
@@ -31,7 +28,7 @@ def generate_signature(private_key: int, message: str) -> Tuple[int, int]:
     return r, s
 
 
-def verify_signature(public_key: ECPoint, message: str, signature: Tuple[int, int]) -> bool:
+def verify_signature(public_key: ECPoint, message: str, signature: Tuple[int, int], base_point) -> bool:
     z = hash_message(message)
     n = curve.order
     r, s = signature
@@ -46,11 +43,13 @@ def verify_signature(public_key: ECPoint, message: str, signature: Tuple[int, in
 
 
 def main():
-    private_key, public_key = generate_keys()
+    base_point = get_base_point()
+    private_key, public_key = generate_keys(base_point)
+    print("Generated Public Key:", public_key.X, public_key.Y)
     message = "test message"
-    signature = generate_signature(private_key, message)
+    signature = generate_signature(private_key, message, base_point)
     print('Signature:', signature)
-    is_valid = verify_signature(public_key, message, signature)
+    is_valid = verify_signature(public_key, message, signature, base_point)
     print("Valid:", is_valid)
 
 
