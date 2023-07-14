@@ -47,10 +47,10 @@ def is_on_curve(point: ECPoint) -> bool:
         return False
 
 
-def add_ECPoints(a: ECPoint, b: ECPoint) -> ECPoint:
+def add_ECPoints(a: ECPoint, b: ECPoint) -> ECPoint | None:
     point_a = Point(a.X, a.Y, curve)
     point_b = Point(b.X, b.Y, curve)
-    result = point_a + point_b
+    result = curve.add_point(point_a, point_b)
     return ECPoint(result.x, result.y)
 
 
